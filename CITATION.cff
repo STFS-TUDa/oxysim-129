@@ -1,10 +1,5 @@
 # This CITATION.cff file describes how to cite this software.
 # GitHub shows a "Cite this repository" button once this file is present.
-#
-# TODO after the first Zenodo release:
-#   - set `version` to the released version (e.g. "1.0")
-#   - set `date-released` to that release's date (YYYY-MM-DD)
-#   - uncomment and fill in `doi` with the DOI Zenodo mints for the release
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
@@ -17,7 +12,9 @@ abstract: >-
 license: GPL-3.0
 repository-code: "https://github.com/STFS-TUDa/oxysim-129"
 url: "https://github.com/STFS-TUDa/oxysim-129"
-# doi: "10.5281/zenodo.XXXXXXX"
+version: "1.0.0"
+date-released: "2026-10-08"
+doi: "10.5281/zenodo.23240592"
 authors:
   - family-names: Steffens
     given-names: Pascal

@@ -1,5 +1,7 @@
 # OxySim-129
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23240592.svg)](https://doi.org/10.5281/zenodo.23240592)
+
 **A High-Fidelity CFD Framework for Carbonaceous Solid Fuel Combustion**
 *From Single-Particle Studies to MW-scale Reactor Simulations*
 
@@ -126,7 +128,7 @@ The build output goes to `build/plattforms-stfs-foam/<platform>/default/`:
 
 | CMake variable | Effect |
 |---|---|
-| `COMPILE_LAGRANGIAN_WITH_TESTS=1` | Compile Catch2 unit tests |
+| `COMPILE_LAGRANGIAN_WITH_TESTS=TRUE` | Compile Catch2 unit tests |
 | `OXYSIM_INSTALL_DIR=<name>` | Change the output sub-directory (default: `default`) |
 
 ---
@@ -318,3 +320,7 @@ bash tests/unit/testFlameletThermo/case/Allrun
 ## Acknowledgements
 
 This work has been funded by the German Research Foundation (DFG) – project number 215035359 – within the framework of the CRC/Transregio 129 "Oxyflame".
+
+## How to cite
+
+If you use this software, please cite it using the metadata in [`CITATION.cff`](CITATION.cff), or click "Cite this repository" in the GitHub sidebar. A DOI for citing a specific version is also available: [10.5281/zenodo.23240592](https://doi.org/10.5281/zenodo.23240592).
