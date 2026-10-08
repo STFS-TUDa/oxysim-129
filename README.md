@@ -3,7 +3,7 @@
 **A High-Fidelity CFD Framework for Carbonaceous Solid Fuel Combustion**
 *From Single-Particle Studies to MW-scale Reactor Simulations*
 
-OxySim-129 is an OpenFOAM-based C++ framework for Lagrangian particle simulations in reactive flows with flamelet-based tabulated chemistry. It provides solvers and libraries for coal and biomass combustion using carbonaceous particle clouds coupled to flamelet manifolds, covering a range of scales from single-particle heat transfer to MW-scale swirl-stabilized combustors. Thermochemistry is looked up from tabulated flamelet manifolds via [`flut-reader`](https://github.com/STFS-TUDa/flut-reader), STFS's companion FLUT library (included as a submodule, see [Installation](#installation)).
+OxySim-129 is an OpenFOAM-based C++ framework for Lagrangian particle simulations in reactive flows with flamelet-based tabulated chemistry. It provides solvers and libraries for coal and biomass combustion using the carbonaceous particle cloud coupled to flamelet manifolds, covering a range of scales from small particle groups to MW-scale swirl-stabilized combustors. Thermochemistry is looked up from tabulated flamelet manifolds via [`flut-reader`](https://github.com/STFS-TUDa/flut-reader), STFS's companion FLUT library (included as a submodule, see [Installation](#installation)).
 
 Developed at the [Institute for Simulation of reactive Thermo-Fluid Systems (STFS)](https://www.stfs.tu-darmstadt.de), TU Darmstadt, within the [DFG CRC/Transregio 129 "Oxyflame"](https://www.oxyflame.de/) (project number 215035359).
 
@@ -68,6 +68,8 @@ cd oxysim-129/
 ```
 
 The `--recurse-submodules` flag is required — it fetches the flamelet look-up table library (`extern/flut-reader`) that the solvers depend on.
+
+Git LFS (https://git-lfs.com/) is also required (git lfs install, once per machine) — reference/test data (*.h5, *.png, *.parq, mesh files, etc.) is stored via LFS, and without it you won't get the real files.
 
 If you already cloned without it, initialize the submodule afterwards instead of re-cloning:
 
@@ -263,6 +265,8 @@ Supports conditional particle deletion via `constant/deleteParticlesDict` (crite
 
 ## Testing
 
+### Integration Tests
+
 Run the integration tests after loading the environment (see [Build](#build)) and activating the Python environment (see [Set up the Python environment](#set-up-the-python-environment)):
 
 ```bash
@@ -281,6 +285,16 @@ python -m pytest tests/integration/test_multiphaseRadiation_bordbar/ -v
 ```
 
 Each test copies `foam_template/` into a temporary directory, runs the OpenFOAM case, and compares results against stored reference data.
+
+### Unit tests
+
+The `flameletThermo` library has a C++ unit test suite (Catch2, fetched automatically by CMake), built separately from the solvers and run via its own `Allrun` script:
+
+```bash
+COMPILE_LAGRANGIAN_WITH_TESTS=TRUE cmake .. && make -j10 testFlameletThermo
+export OXYSIM_REPO_ROOT=/path/to/oxysim-129
+bash tests/unit/testFlameletThermo/case/Allrun
+```
 
 ---
 
