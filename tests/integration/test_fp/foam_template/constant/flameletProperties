@@ -1,0 +1,35 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      flameletProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+flutFile    FLUT.h5;
+
+inputVariablesFlameletTable (Z yc);
+outputVariablesFlameletTable ();
+
+variablesToSolve (Z yc);
+
+variableEquations
+{
+    Z
+    {
+        updateType unityLewis_noSource; 
+    }
+    yc
+    {
+        updateType  unityLewis; 
+    }
+}

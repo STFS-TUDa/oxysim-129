@@ -1,0 +1,9 @@
+# Python environment for running the integration tests (see README.md → Testing).
+# Install with: pip install -r tests/python_utils/requirements.txt
+pytest
+numpy==2.0.0
+pandas==2.2.3
+pyarrow==19.0.0
+scipy==1.13.1
+matplotlib==3.10.0
+pyvista

@@ -1,0 +1,12 @@
+*.dat filter=lfs diff=lfs merge=lfs -text
+*.ulf filter=lfs diff=lfs merge=lfs -text
+*.bin filter=lfs diff=lfs merge=lfs -text
+*.h5 filter=lfs diff=lfs merge=lfs -text
+*.ref filter=lfs diff=lfs merge=lfs -text
+*.parq filter=lfs diff=lfs merge=lfs -text
+*.ct filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*points.gz filter=lfs diff=lfs merge=lfs -text
+*neighbours.gz filter=lfs diff=lfs merge=lfs -text
+*faces.gz filter=lfs diff=lfs merge=lfs -text
+*boundary.gz filter=lfs diff=lfs merge=lfs -text

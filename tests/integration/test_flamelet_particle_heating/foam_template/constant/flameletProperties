@@ -1,0 +1,43 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.0                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          flameletProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+flutFile "single_species_Tnorm_flut.h5";
+
+inputVariablesFlameletTable ( ha );
+
+outputVariablesFlameletTable ( N2 O2 );
+
+variablesToSolve ( ha );  // order of the variables of the transport equations that are solved
+
+variableEquations
+{
+    ha
+    {
+        updateType			unityLewis_noSource;
+    }
+}
+
+
+
+// ************************************************************************* //

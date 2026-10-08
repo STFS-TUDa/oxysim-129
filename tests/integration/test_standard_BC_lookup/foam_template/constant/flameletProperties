@@ -1,0 +1,49 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.0                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          flameletProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+flutFile "FLUT.h5";
+flutFileBC "FLUT_BC.h5";
+
+inputVariablesFlameletTable (Z ha yc);
+outputVariablesFlameletTable (CO2 CO ha_norm yc_norm yc_min yc_max ha_min ha_max );
+
+variablesToSolve (Z ha yc);  // order of the variables of the transport equations that are solved
+
+variableEquations
+{
+    Z
+    {
+        updateType unityLewis_noSource;
+    }
+    ha
+    {
+        updateType unityLewis_noSource; 
+    }
+    yc
+    {
+        updateType  unityLewis_noSource; 
+    }
+}
+
+// ************************************************************************* //

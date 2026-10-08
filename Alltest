@@ -1,0 +1,68 @@
+#!/bin/sh
+# Run from this directory
+cd "${0%/*}" || exit
+
+# source shared shell helpers
+source scripts/bash_functions.sh
+
+#!/bin/bash
+FLAG_U=false
+FLAG_I=false
+
+# Parse command-line options
+while getopts ":ui" opt; do
+  case ${opt} in
+    u )
+      FLAG_U=true
+      echo "Run unit tests (-u)"
+      shift $((OPTIND -1))
+      ;;
+    i )
+      FLAG_I=true
+      echo "Run integration tests (-i)"
+      shift $((OPTIND -1))
+      ;;
+    \? )
+      echo "Invalid option: $OPTARG" >&2
+      ;;
+  esac
+done
+
+# Set both variables if neither -u nor -i is found
+if ! $FLAG_U && ! $FLAG_I; then
+    echo "Run unit and integration tests (-i -u)"
+    FLAG_U=true
+    FLAG_I=true
+fi
+
+# ---------------------------------------------------------------------------
+# Unit testing
+# ---------------------------------------------------------------------------
+# Framework: Catch2
+# Include Alltest file in the folder of each unit test. Ensure that the Alltest
+# file is executable and contain a check for the exit status of each solver.
+# This catches error codes of the solvers as well as executable not found errors.
+
+error_code=0
+
+if $FLAG_U ; then
+  ctest --test-dir build || error_code=1
+fi
+
+# ---------------------------------------------------------------------------
+# Integration testing
+# ---------------------------------------------------------------------------
+
+if $FLAG_I ; then
+    if [[ $CONDA_DEFAULT_ENV == "stfs_pytb_"* ]]; then
+      printWarning "If tests fail, please check if a conda environment containing the stfs python toolbox is activated."
+    fi
+
+    # execute pytest-xargs
+    pytest ./tests/integration/ -n 4 -v --durations=0 || error_code=1
+
+fi
+
+#------------------------------------------------------------------------------
+
+exit $error_code

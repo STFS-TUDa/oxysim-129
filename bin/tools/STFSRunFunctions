@@ -1,0 +1,108 @@
+#---------------------------------*- sh -*-------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | www.openfoam.com
+#    \\/     M anipulation  |
+#------------------------------------------------------------------------------
+#     Copyright (C) 2011-2016 OpenFOAM Foundation
+#     Copyright (C) 2015-2023 OpenCFD Ltd.
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
+#
+# Script
+#     RunFunctions
+#
+# Description
+#     Miscellaneous functions for running tutorial cases
+#     
+#     This is a copy from $WM_PROJECT_DIR/bin/tools/RunFunctions
+#     with minor modifications to run testing of STFS extensions
+#
+#------------------------------------------------------------------------------
+
+
+#
+# Run given application in serial with logfile output.
+# The preexistence of the log file prevents rerunning.
+#
+runApplication()
+{
+    local appName appRun optValue logFile logMode
+
+    # Any additional parsed arguments (eg, decomposeParDict)
+    local appArgs
+
+    # Parse options until executable is encountered
+    while [ "$#" -gt 0 ] && [ -z "$appRun" ]
+    do
+        case "$1" in
+        ('') ;;  # Ignore junk
+
+        (-a | -append)
+            logMode=append
+            ;;
+        (-o | -overwrite)
+            logMode=overwrite
+            ;;
+        (-s | -suffix)
+            logFile=".$2"
+            shift
+            ;;
+
+        (-decompose-dict=*)
+            optValue="${1#*=}"
+            case "$optValue" in
+            ('' | none | false) ;;  ## Ignore
+            (*) appArgs="$appArgs -decomposeParDict $optValue" ;;
+            esac
+            ;;
+
+        (-decomposeParDict)
+            optValue="$2"
+            shift
+            case "$optValue" in
+            ('' | none | false) ;; ## Ignore
+            (*) appArgs="$appArgs -decomposeParDict $optValue" ;;
+            esac
+            ;;
+
+        (*)
+            appRun="$1"
+            ;;
+        esac
+        shift
+    done
+
+    appName="${appRun##*/}"
+    logFile="log.$appName$logFile"
+
+    if [ "$OPENFOAM_TESTING_MODE" = "true" ]; then
+        echo "Running $appRun on $PWD in testing mode."
+        # Execute the command and redirect output to logFile
+        "$appRun" $appArgs "$@" > "$logFile" 2>&1
+        # Check the exit status of the command
+        if [ $? -ne 0 ]; then
+            echo "Error: $appRun encountered an error:"
+            cat $logFile
+            # You can also exit the script here if you want
+            exit 1
+        fi
+    else
+        if [ -f "$logFile" ] && [ -z "$logMode" ]; then
+            echo "$appName already run on $PWD: remove log file '$logFile' to re-run"
+            exit 1
+        else
+            echo "Running $appRun on $PWD"
+            if [ "$logMode" = append ]; then
+                "$appRun" $appArgs "$@" >> "$logFile" 2>&1
+            else
+                "$appRun" $appArgs "$@" > "$logFile" 2>&1
+            fi
+        fi
+    fi
+
+}
+
+#------------------------------------------------------------------------------

@@ -1,0 +1,93 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.0                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          flameletProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+flutFile "Z_Y_YY_hanorm_non_reactive.h5";
+
+inputVariablesFlameletTable ( Z Y YY ha );
+outputVariablesFlameletTable (N2 O2 CH4);
+
+//variablesToSolve ( Sfuel1 fuel1 Z ha );  // order of the variables of the transport equations that are solved
+variablesToSolve ( FUELS Z Ys ha );  // order of the variables of the transport equations that are solved
+
+variableEquations
+{
+    Sfuel1
+    {
+        updateType                      particleSource;
+        cloudNames                      (carbCloud);
+        speciesWeights
+        (
+                                        (CH2O     1)
+                                        (CH3O     1)
+                                        (CH3      1)
+        );
+    }
+    fuel1
+    {
+    	updateType			unityLewis_particleSource;
+    }
+    fuel2
+    {
+    	updateType			unityLewis_particleSource;
+    }
+    Sfuel3
+    {
+        updateType                      particleSource;
+        cloudNames                      (carbCloud);
+        speciesWeights
+        (
+                                        (CO     2.879)
+        );
+    }
+    fuel3
+    {
+    	updateType			unityLewis_particleSource;
+    }
+    Z
+    {
+        updateType                      sum;
+        summands                        (SUMMANDS);
+    }
+    Y
+    {
+        updateType                      fraction;
+        numerators                      (NUMY);
+	denominators 			(DENY);
+    }
+    YY
+    {
+        updateType                      fraction;
+        numerators                      (NUMYY);
+	denominators 			(DENYY);
+    }
+    ha
+    {
+        updateType			unityLewis_particleEnthalpySource;
+    	cloudNames			(carbCloud);
+    }
+}
+
+
+
+// ************************************************************************* //

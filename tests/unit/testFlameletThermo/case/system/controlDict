@@ -1,0 +1,52 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     rhoFlameletFoam;
+
+startFrom       startTime;
+startTime       0;
+
+stopAt          endTime;
+endTime         1;
+
+// Time time step is set to a relatively high value for testing purposes.
+// For actual flame calculation a lower value is recommened.
+deltaT          1;
+
+writeControl    adjustableRunTime;
+writeInterval   1;
+
+writeFormat     ascii;
+writePrecision  12;
+writeCompression no;
+
+timeFormat      general;
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  no; 
+maxCo           0.1;
+maxDeltaT	    1e-7;
+
+libs            ( );
+
+functions
+{
+}
+
+// ************************************************************************* //

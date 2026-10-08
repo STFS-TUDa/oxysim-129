@@ -1,0 +1,73 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "$FOAM_CASE/settings"
+
+solvers
+{
+    "rho.*"
+    {
+        solver          diagonal;
+    }
+
+    "(p|pd)"
+    {
+        solver           PCG;
+        preconditioner   DIC;
+        tolerance        1e-6;
+        relTol           0.1;
+        minIter          1;
+    }
+
+    "(p|pd)Final"
+    {
+        $p;
+        tolerance        1e-8;
+        relTol           0.0;
+    }
+
+    "(U|Z|yc)"
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-8;
+        relTol          0.1;
+        minIter         1;
+    }
+
+    "(U|Z|yc)Final"
+    {
+        $U;
+        relTol          0.0;
+    }
+}
+
+PIMPLE
+{
+    momentumPredictor   yes;
+    nOuterCorrectors    1;
+    nCorrectors         3;
+    nNonOrthogonalCorrectors 0;
+    
+    lowMach             $LOW_MACH;
+    
+    // Pressure of flamelet table
+    // Used to calculate psi, if not present in table.
+    pRef                101325;
+}
+
+// ************************************************************************* //

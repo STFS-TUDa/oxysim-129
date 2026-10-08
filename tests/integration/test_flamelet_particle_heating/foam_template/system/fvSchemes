@@ -1,0 +1,68 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes
+{
+    default         CrankNicolson 0.4;//Euler;
+}
+
+gradSchemes
+{
+    default         Gauss linear;
+    grad(p)         Gauss linear;
+}
+
+divSchemes
+{
+    default         none;
+    div(phi,U)        Gauss linearUpwind grad(U);
+    div(phid,p)       Gauss linear;
+    div(phi,K)        Gauss linear;
+    div(phi,k)        Gauss limitedLinear 1;
+    div(phi,epsilon)  Gauss limitedLinear 1;
+    div(phi,Z)        Gauss limitedLinear 1;    //limitedLinear01 1;
+    div(phi,elemental_oxygen)     Gauss limitedLinear 0.1;;//Gauss limitedLinear 1;//
+    div(phi,fuel)     Gauss limitedLinear 0.1;;//Gauss limitedLinear 1;//
+    div(phi,yc)      Gauss limitedLinear 0.1;//Gauss limitedLinear 1;//
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+    div(phi,Yi_h)     Gauss limitedLinear 1;
+    div(phi,Yi)	      Gauss limitedLinear 1;
+    div(phi,h)     Gauss linear;//Gauss limitedLinear 1;//
+    div(phi,ha)               Gauss limitedLinear 0.1;
+    div(phi,Yi_h)   Gauss upwind;
+    
+    div(phid,p)     Gauss upwind;
+    div(phi,K)      Gauss linear;
+}
+
+laplacianSchemes
+{
+    default         Gauss linear limited 0.5;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         limited corrected 0.5;
+}
+
+
+// ************************************************************************* /mited corrected 0.5;/

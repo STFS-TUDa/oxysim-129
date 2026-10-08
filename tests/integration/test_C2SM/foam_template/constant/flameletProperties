@@ -1,0 +1,59 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.0                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          flameletProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+flutFile "non_reactive_N2_CH4.h5";
+
+inputVariablesFlameletTable ( Z ha );
+
+outputVariablesFlameletTable (N2 CH4);
+
+variablesToSolve ( SZ Z ha );  // order of the variables of the transport equations that are solved
+
+variableEquations
+{
+    SZ
+    {
+    	updateType			particleSource;
+	cloudNames			(carbCloud);
+        speciesWeights
+        (
+                                        (CH4     1)
+        );
+
+    }
+    Z
+    {
+        updateType			unityLewis_particleSource;
+    	cloudNames			(carbCloud);
+    }
+    ha
+    {
+        updateType			unityLewis_particleEnthalpySource;
+	cloudNames			(carbCloud);
+    }
+}
+
+
+
+// ************************************************************************* //

@@ -1,0 +1,41 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      flameletProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+flutFile     FLUT.h5;
+flutFileBC   FLUT_BC.h5;
+
+inputVariablesFlameletTable (Z ha yc);
+outputVariablesFlameletTable (CH4 H2O);
+
+// Usage with canteraThermo
+useWithCanteraThermo false;
+
+// Equations to solve.
+variablesToSolve (Z yc);
+
+variableEquations
+{
+    Z
+    {
+        updateType  noTransport;
+    }
+    yc
+    {
+        updateType  unityLewisNumber;
+    }
+}
+// ************************************************************************* //

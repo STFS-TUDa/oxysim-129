@@ -1,0 +1,82 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// ************************************************************************* //
+solvers
+{
+    "rho.*"
+    {
+        solver          diagonal;
+    }
+
+    "(p|pd)"
+    {
+        solver           PCG;
+        preconditioner   DIC;
+        tolerance        1e-6;
+        relTol           0.1;
+    }
+
+    "(p|pd)Final"
+    {
+        $p;
+        tolerance        1e-6;
+        relTol           0.0;
+    }
+
+    "(Z|U|yc|ha|k|epsilon)"
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-6;
+        relTol          0.1;
+    }
+
+    "(Z|U|yc|ha|k|epsilon)Final"
+    {
+        $U;
+        relTol          0;
+    }
+}
+
+PIMPLE
+{
+    nCorrectors         2;
+    nOuterCorrectors    2;
+    nNonOrthogonalCorrectors 0;
+    momentumPredictor true;
+    
+    // Settings for pressure equation to use
+    lowMach             true;   // true (D) | false; lowMach should be used for constant pressure tables.
+    
+    // Reference pressure at which the flamelet table was created.
+    // Used to calculate psi, if p is not a inputVariable of FLUT
+    pRef                101325; // 101325 (default value)
+
+    residualControl
+    {
+        "(p|U)" 
+        {
+          tolerance    10e-5;
+          relTol      0;
+        }
+    }
+}
+
+
+
+// ************************************************************************* //

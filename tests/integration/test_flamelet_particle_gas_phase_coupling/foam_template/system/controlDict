@@ -1,0 +1,105 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application    flameletCloudFoam;
+
+startFrom      startTime;//latestTime;//
+
+startTime       0.0;
+
+stopAt          endTime;//writeNow;//
+
+endTime         0.3;
+
+deltaT          1e-6;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.1;
+
+purgeWrite      10;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo           0.4;
+
+maxDeltaT       5e-5;
+
+deleteParticles false;
+
+
+clouds
+{ 
+        carbCloud      carbonaceousCloud;
+}
+
+libs    (	"libreactionThermophysicalModelsSTFS.so"
+			"libgroovyBC.so" );
+
+// ************************************************************************* //
+functions
+{
+    writeCarbCloud
+    {
+        type            vtkCloud;
+        libs            (lagrangianFunctionObjects);
+        writeControl    adjustableRunTime;
+        writeInterval   1e-3;
+        format          ascii;
+        cloud           carbCloud;
+        fields          ( T origId );
+    }
+    outletValue
+    {
+        // Mandatory entries (unmodifiable)
+        type            surfaceFieldValue;
+        libs            ("fieldFunctionObjects");
+        // Mandatory entries (runtime modifiable)
+        enabled         yes;
+        fields          (phi);
+        operation       sum;
+        regionType      patch;
+        name            OUTLET;
+        writeFields     false;
+        log             yes;
+    }
+    inletValue
+    {
+        // Mandatory entries (unmodifiable)
+        type            surfaceFieldValue;
+        libs            ("fieldFunctionObjects");
+        // Mandatory entries (runtime modifiable)
+        enabled         yes;
+        fields          (phi);
+        operation       sum;
+        regionType      patch;
+        name            INLET;
+        writeFields     false;
+    }
+}

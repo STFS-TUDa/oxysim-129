@@ -1,0 +1,190 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      coalCloud1Properties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+soi              0.05;
+
+solution
+{
+    active          true;
+    transient       yes;
+    coupled         true;
+    cellValueSourceCorrection on;
+    maxCo           0.3;
+
+    sourceTerms
+    {
+        schemes
+        {
+            rho             semiImplicit 1;
+            U               semiImplicit 1;
+            Yi              semiImplicit 1;
+            h               semiImplicit 1;
+            radiation       semiImplicit 1;
+        }
+    }
+
+    interpolationSchemes
+    {
+        rho             cell;
+        U               cellPoint;
+        thermo:mu       cell;
+        T               cellPoint;
+        cp              cellPoint;
+        kappa           cell;
+        p               cell;
+        G               cell;
+        mu              cell;
+    }
+
+    integrationSchemes
+    {
+        U               Euler;
+        T               analytical;
+    }
+}
+
+constantProperties
+{
+    rho0            707.3553026306461;
+    T0              800;
+    particleModelType 1;
+    subTimeSteps    50;
+
+    Cp0             960;
+    epsilon0        0.7;
+    f0              0.5;
+    TDevol          800;
+    LDevol          0;
+    hRetentionCoeff 1;
+    constantVolume  false;
+}
+
+subModels
+{
+    particleForces
+    {
+    }
+
+    injectionModels
+    {
+
+        model1
+        {
+            type            manualInjection;
+            massTotal       1e-10;
+	    //nParticle		1;
+            parcelBasisType mass;
+            SOI             0;
+            positionsFile   "particlePositions";
+            U0              (0 0 0);
+                sizeDistribution
+                {
+                    type        fixedValue;
+                    fixedValueDistribution
+                    {
+                        value   30e-06;
+                    }
+                }
+        }
+    }
+    	
+
+    
+
+    dispersionModel none;
+
+    patchInteractionModel standardWallInteraction;
+
+    heatTransferModel RanzMarshall;
+
+    compositionModel singleMixtureFraction;
+
+    phaseChangeModel none;
+
+    devolatilisationModel none;//constantRateDevolatilisation;//
+
+    devolatilisationModelSTFS   C2SM;//none;//
+
+    stochasticCollisionModel none;
+
+    surfaceReactionModel none;
+
+    surfaceFilmModel none;
+
+    heatCapacityModelSTFS none;
+
+    radiation       off;
+    
+
+    patchInteractionModel standardWallInteraction;
+
+    standardWallInteractionCoeffs
+    {
+        type            rebound;
+        e               1;
+        mu              0;
+    }
+
+    RanzMarshallCoeffs
+    {
+        BirdCorrection  true;
+    }
+
+    singleMixtureFractionCoeffs
+    {
+        phases
+        (
+            gas
+            {
+	    	CH4 1;
+            }
+            liquid
+            {
+            }
+            solid
+            {
+	    	C 1;
+            }
+        );
+        YGasTot0        1;
+        YLiquidTot0     0;
+        YSolidTot0      0;
+    }
+    C2SMCoeffs
+    {
+        volatileData
+        (
+        //(CH4 0.3 2e5 1.054e8 1.0 1.3e7 1.672e8)
+        (CH4 0.7 2e7 8.054e7 1.0 1.3e7 1.672e8)
+        );
+
+        residualCoeff 1e-6;
+    }
+    constantRateDevolatilisationCoeffs
+    {
+        volatileData
+        (
+	    (CH4		    10)
+        );
+        residualCoeff   0.001;
+    }
+
+}
+
+
+
+
+// ************************************************************************* //

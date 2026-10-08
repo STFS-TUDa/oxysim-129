@@ -1,0 +1,88 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      radiationProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+radiation on;
+
+radiationModel  fvDOMwsgg;
+
+fvDOMwsggCoeffs
+{
+    nPhi        2;      // azimuthal angles in PI/2 on X-Y.(from Y to X)
+    nTheta      4;      // polar angles in PI (from Z to X-Y plane)
+    maxIter     5;      // maximum number of iterations
+    tolerance   1e-3;   // convergence criteria for radiation iteration
+}
+
+// Number of flow iterations per radiation iteration
+solverFreq 1;
+
+thermoName flameletProperties;
+
+absorptionEmissionModel wsggBinaryAbsorptionEmission;	
+
+
+wsggBinaryAbsorptionEmissionCoeffs
+{
+    model1
+    {
+        absorptionEmissionModel wsggDorigonAbsorptionEmission;
+
+        wsggDorigonAbsorptionEmissionCoeffs
+        {
+            biCoeffs
+            4
+            (
+                    5(0.5617e-1     7.844e-4        -8.563e-7       4.246e-10       -7.44e-14)
+                    5(1.426e-1      1.795e-4        -0.1077e-7      -0.6972e-10     1.774e-14)
+                    5(1.362e-1      2.574e-4        -3.711e-7       1.575e-10       -2.267e-14)
+                    5(1.222e-1      -0.2327e-4      -0.74927e-7     0.4275e-10      -0.6608e-14)
+            );
+        
+            kiCoeffs
+            5
+            (
+                    0
+                    1.921E-01
+                    1.719E+00
+                    1.137E+01
+                    1.110E+02
+            );
+        
+        }
+    }
+
+    model2
+    {
+	absorptionEmissionModel wsggGreyCloudAbsorptionEmission;
+	wsggGreyCloudAbsorptionEmissionCoeffs
+	{
+	    cloudNames
+	    (
+		coalCloud
+		ashCloud
+	    );
+	}
+    }
+}
+
+scatterModel    none;
+
+sootModel       none;
+
+
+// ************************************************************************* //

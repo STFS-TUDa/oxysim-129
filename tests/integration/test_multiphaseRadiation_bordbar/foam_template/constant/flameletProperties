@@ -1,0 +1,45 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.0                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          flameletProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+flutFile "non_reactive_09CO2_01H2O_ha_norm.h5";
+
+inputVariablesFlameletTable ( ha );
+
+outputVariablesFlameletTable ( T CO2 H2O W );
+
+variablesToSolve ( ha );  // order of the variables of the transport equations that are solved
+
+variableEquations
+{
+    ha
+    {
+        updateType			unityLewis_particleEnthalpySource;
+	cloudNames			(coalCloud ashCloud);
+    }
+}
+
+
+
+// ************************************************************************* //
+

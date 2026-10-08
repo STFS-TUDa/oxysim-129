@@ -1,0 +1,28 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 28,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "ninja",
+      "displayName": "Ninja (recommended)",
+      "description": "Build with Ninja. OpenFOAM must be sourced first. Set CANTERA_ROOT.",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "OXYSIM_INSTALL_DIR": "default"
+      }
+    },
+    {
+      "name": "make",
+      "displayName": "Unix Makefiles",
+      "description": "Build with make. OpenFOAM must be sourced first. Set CANTERA_ROOT.",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "OXYSIM_INSTALL_DIR": "default"
+      }
+    }
+  ]
+}

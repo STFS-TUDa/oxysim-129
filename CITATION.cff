@@ -1,0 +1,49 @@
+# This CITATION.cff file describes how to cite this software.
+# GitHub shows a "Cite this repository" button once this file is present.
+#
+# TODO after the first Zenodo release:
+#   - set `version` to the released version (e.g. "1.0")
+#   - set `date-released` to that release's date (YYYY-MM-DD)
+#   - uncomment and fill in `doi` with the DOI Zenodo mints for the release
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "OxySim-129"
+abstract: >-
+  A high-fidelity OpenFOAM-based C++ framework for carbonaceous solid fuel
+  combustion, covering scales from single-particle studies to MW-scale
+  reactor simulations. Provides solvers and libraries for coal and biomass
+  combustion coupled to flamelet-based tabulated chemistry.
+license: GPL-3.0
+repository-code: "https://github.com/STFS-TUDa/oxysim-129"
+url: "https://github.com/STFS-TUDa/oxysim-129"
+# doi: "10.5281/zenodo.XXXXXXX"
+authors:
+  - family-names: Steffens
+    given-names: Pascal
+    email: steffens@stfs.tu-darmstadt.de
+    affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
+  - family-names: Berkel
+    given-names: "Leon Loni"
+    affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
+  - family-names: Vahl
+    given-names: Antje
+    affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
+  - family-names: Steinhausen
+    given-names: Matthias
+    affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
+  - family-names: Nicolai
+    given-names: Hendrik
+    affiliation: "Department of Mechanical Engineering, McGill University"
+  - family-names: Hasse
+    given-names: Christian
+    affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
+keywords:
+  - OpenFOAM
+  - CFD
+  - combustion
+  - flamelet
+  - tabulated chemistry
+  - Lagrangian particles
+  - coal combustion
+  - biomass combustion

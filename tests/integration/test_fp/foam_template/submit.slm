@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH --partition=p_test
+#SBATCH --nodes=1          # number of requested nodes
+#SBATCH --exclusive
+#SBATCH --ntasks-per-node=9
+##SBATCH --ntasks-per-node=1
+#SBATCH --output output_%A.out	# where to redirect STDOUT
+#SBATCH --error error_%A.err	# where to redirect SDTERR
+#SBATCH --time 00:30:00		# maximum walltime this job will use, allowed maximum is 48h
+#SBATCH --job-name of_flamelet_cf	# job name
+#SBATCH --mail-type ALL		# choices: ALL, BEGIN, END, FAIL, REQUEUE
+
+## Source OpenFOAM-v2006
+. /shared_home/poppseb/OpenFOAM/poppseb-v2006/stfs-openfoam-v2006/source.sh
+
+## Execute solver
+srun rhoFlameletULFFoam -parallel

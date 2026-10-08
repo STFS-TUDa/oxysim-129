@@ -1,0 +1,64 @@
+#!/bin/bash
+cd "${0%/*}" || exit                                    # Run from this directory
+source ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions       # Import standard OpenFOAM run functions
+source ${OXYSIM_REPO_ROOT:?}/bin/tools/STFSRunFunctions # Override runApplication function for testing
+#------------------------------------------------------------------------------
+
+# Function to print usage
+usage() {
+  echo "Usage: $0 [-p|--parallel] [-h|--help]"
+  echo "  -p, --parallel    Run in parallel mode"
+  echo "  -h, --help        Display this help message"
+  exit 1
+}
+
+# Default value
+parallel=false
+
+# Parse command line arguments
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -p|--parallel)
+      parallel=true
+      ;;
+    -h|--help)
+      usage
+      ;;
+    --) # End of all options
+      shift
+      break
+      ;;
+    -*|--*) # Unsupported options
+      echo "Unknown option: $1"
+      usage
+      ;;
+    *) # End of options, remaining are positional arguments
+      break
+      ;;
+  esac
+  shift
+done
+
+touch case.foam
+
+# run application
+runApplication blockMesh
+# copy initial time step
+cp -r 0.org 0
+
+# Implement parallel processing logic if -p is set
+if [ "$parallel" = true ]; then
+    echo "Running in parallel mode..."
+    runApplication decomposePar -force
+    runParallel $(getApplication)
+    runApplication reconstructPar 
+else
+    echo "Running single core..."
+    runApplication $(getApplication)
+fi
+
+exit 0
+
+
+#------------------------------------------------------------------------------
+

@@ -1,0 +1,20 @@
+#!/bin/bash
+cd "${0%/*}" || exit                                    # Run from this directory
+source ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions       # Import standard OpenFOAM run functions
+source ${OXYSIM_REPO_ROOT:?}/bin/tools/STFSRunFunctions # Override runApplication function for testing
+#------------------------------------------------------------------------------
+
+touch case.foam
+
+# run application
+runApplication blockMesh
+testFlameletThermo --reporter junit -o report-testFlameletThermo.xml
+
+# exit with error when command not found
+if [ $? != 0 ] ; then  
+            exit 1
+fi 
+
+
+
+#------------------------------------------------------------------------------

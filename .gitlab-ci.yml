@@ -1,0 +1,194 @@
+# Configuration for CI/CD pipeline
+
+# Define stages for the pipeline
+stages:
+  - ".pre"
+  - syntax
+  - build
+  - test
+  - deploy
+
+# Define global variables and settings
+variables:
+  # Automatically fetch the submodules on clone.
+  # GIT_SUBMODULE_STRATEGY: recursive
+  GIT_STRATEGY: none # Disables Git fetching in all jobs
+  PYTB_GIT_HASH_FILE: "./pytb_git_hash"
+  OF_INSTALL_DIR: "/cluster/software_spack_v1.1.0/external_packages/reactivefoam_lagrangian/2512/"
+
+
+# Define rules for the entire workflow
+workflow:
+  rules:
+    # Enable testing on merge-requests
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'  
+
+# Install Python tools for testing
+install-python-tools:
+  variables:
+    GIT_STRATEGY: clone # Enable git fetching in the .pre job (first one called)
+  tags:
+    - cluster
+  stage: .pre
+  before_script:
+    - GIT_LFS_SKIP_SMUDGE=1 git submodule sync -- extern/flut-reader
+    - GIT_LFS_SKIP_SMUDGE=1 git submodule update --init -- extern/flut-reader
+  script:
+    - PYTB_GIT_HASH=$(git rev-parse --short HEAD)
+    - echo "export PYTB_GIT_HASH=$PYTB_GIT_HASH" > $PYTB_GIT_HASH_FILE
+    - module load miniforge3
+    - source ~/.bashrc
+    - conda create --name stfs_pytb_$PYTB_GIT_HASH python=3.10 -y
+    - conda activate stfs_pytb_$PYTB_GIT_HASH
+    - pip install -r tests/python_utils/requirements.txt
+    - pre-commit install
+    - export SKIP_TESTING_LFS_COMMIT=true
+    - source scripts/source_stfs_cluster.sh --lagrangian_testing
+    - "rm -rf build"
+  artifacts:
+    paths:
+      - $PYTB_GIT_HASH_FILE
+
+# Check code formatting
+code-formatting:
+  tags:
+    - cluster
+  stage: syntax
+  before_script:
+    - source $PYTB_GIT_HASH_FILE
+  script:
+    - module load miniforge3
+    - source ~/.bashrc
+    - conda activate stfs_pytb_$PYTB_GIT_HASH
+    - clang-format --dry-run --Werror $(find . -not -path "*/MUSCLReconstruction/*" -a -not -path  "*/finiteRateChemistry/*" -a -not -path "*/submodules/*" -a -not -path "*/extern/*" \( -name "*.[Cc]" -o -name "*.[Hh]" \))
+  needs:
+    - install-python-tools
+
+large-files:
+  tags:
+    - cluster
+  stage: syntax
+  before_script:
+    - source $PYTB_GIT_HASH_FILE
+  script:
+    - module load miniforge3
+    - source ~/.bashrc
+    - conda activate stfs_pytb_$PYTB_GIT_HASH
+    - scripts/check_git_file_sizes.sh
+    - scripts/check_jupyter_notebooks_are_purged.sh
+  needs:
+  - install-python-tools
+
+# Build OpenFOAM on STFS cluster
+build-foam-stfs:
+
+  tags:
+    - cluster
+  stage: build
+  before_script:
+    - export SKIP_TESTING_LFS_COMMIT=true
+    - source scripts/source_stfs_cluster.sh --lagrangian_testing
+  script:
+    - mkdir -p build
+    - cd build
+    - cmake --preset ninja -DCMAKE_INSTALL_PREFIX=$OF_INSTALL_DIR ../.
+    - cmake --build . --parallel 20 
+    - cd .. 
+  rules:
+    # Run build on branches that are not marked as drafts.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_LABELS !~ /draft/ && $CI_MERGE_REQUEST_TITLE !~ /^Draft:/ && $CI_MERGE_REQUEST_LABELS !~ /Documentation/'
+  needs:
+    - code-formatting
+    - large-files
+
+# Run tests on STFS cluster
+unit-tests:
+  tags:
+    - cluster
+  stage: test
+  before_script:
+    - export SKIP_TESTING_LFS_COMMIT=true
+    - source scripts/source_stfs_cluster.sh --lagrangian_testing
+  script:
+    - ./Alltest -u
+  rules:
+    # Run test on branches that are not marked as drafts.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_LABELS !~ /draft/ && $CI_MERGE_REQUEST_TITLE !~ /^Draft:/ && $CI_MERGE_REQUEST_LABELS !~ /Documentation/'
+  needs:
+    - build-foam-stfs
+
+integration-tests:
+  tags:
+    - cluster
+  stage: test
+  before_script:
+    - export SKIP_TESTING_LFS_COMMIT=true
+    - source scripts/source_stfs_cluster.sh --lagrangian_testing
+    - source $PYTB_GIT_HASH_FILE
+  script:
+    - module load miniforge3
+    - source ~/.bashrc
+    - conda activate stfs_pytb_$PYTB_GIT_HASH
+    - ./Alltest -i
+  rules:
+    # Run test on branches that are not marked as drafts.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_LABELS !~ /draft/ && $CI_MERGE_REQUEST_TITLE !~ /^Draft:/ && $CI_MERGE_REQUEST_LABELS !~ /Documentation/'
+  needs:
+    - unit-tests
+  artifacts:
+    when: on_failure
+    paths: 
+      - ./**/tests/integration/**/temp/*
+      - ./**/tests/integration/**/temp/**/*
+    expire_in: 1 day
+    
+## Deploy OpenFOAM for module
+deploy-sources:
+  tags:
+    - cluster
+  stage: deploy
+  before_script:
+    - source scripts/source_stfs_cluster.sh
+  script:
+    # Navigate to the build directory and install
+    - rm -rf $OF_INSTALL_DIR/*
+    - mkdir bin
+    - cd build/
+    - ninja install
+    - cd -
+  rules:
+  #Run deploy step only on merge-trains on the main branch.
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_LABELS !~ /Documentation/'
+  needs:
+    - unit-tests
+    - integration-tests
+
+#deploy-documentation:
+#  tags:
+#    - cluster
+#  stage: deploy
+#  before_script:
+#    - source scripts/source_stfs_cluster.sh --lagrangian_testing
+#  script:
+#    - cd doc/
+#    - doxygen Doxyfile
+#    - cd -
+#    - mkdir public
+#    - cp -r doc/html/* public/
+#  artifacts:
+#    paths:
+#      - public
+#  rules:
+#    # Run deploy step only on merge-trains on the main branch.
+#    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+#  needs:
+#    - integration-tests
+
+# Clean up OpenFOAM specific build directories on STFS cluster
+cleanup-stfs:
+  tags:
+    - cluster
+  stage: .post
+  before_script:
+  script:
+    - rm -rf build
