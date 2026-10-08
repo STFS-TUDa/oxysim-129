@@ -22,21 +22,27 @@ authors:
   - family-names: Steffens
     given-names: Pascal
     email: steffens@stfs.tu-darmstadt.de
+    orcid: "https://orcid.org/0000-0001-6262-3084"
     affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
   - family-names: Berkel
     given-names: "Leon Loni"
+    orcid: "https://orcid.org/0000-0002-1683-2456"
     affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
   - family-names: Vahl
     given-names: Antje
+    orcid: "https://orcid.org/0009-0002-4851-8960"
     affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
   - family-names: Steinhausen
     given-names: Matthias
+    orcid: "https://orcid.org/0000-0003-2485-1590"
     affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
   - family-names: Nicolai
     given-names: Hendrik
+    orcid: "https://orcid.org/0000-0002-0355-2252"
     affiliation: "Department of Mechanical Engineering, McGill University"
   - family-names: Hasse
     given-names: Christian
+    orcid: "https://orcid.org/0000-0001-9333-0911"
     affiliation: "Institute for Simulation of reactive Thermo-Fluid Systems (STFS), TU Darmstadt"
 keywords:
   - OpenFOAM
