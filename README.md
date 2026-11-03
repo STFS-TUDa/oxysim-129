@@ -308,7 +308,7 @@ bash tests/unit/testFlameletThermo/case/Allrun
 4. Vascellari et al. (2013) doi:[10.1016/j.fuel.2013.06.014](https://doi.org/10.1016/j.fuel.2013.06.014) — pkp-lite kinetics approach
 5. Steffens et al. (2024) doi:[10.1016/j.fuel.2024.132098](https://doi.org/10.1016/j.fuel.2024.132098) — coal/biomass flamelet model
 6. Nicolai et al. (2021) doi:[10.1016/j.combustflame.2021.111722](https://doi.org/10.1016/j.combustflame.2021.111722) — laminar flow reactor validation
-7. Berkel et al. (2025) — optically accessible solid fuel combustor validation
+7. Berkel et al. (2025) [10.1016/j.fuel.2024.133449](https://doi.org/10.1016/j.fuel.2024.133449) — optically accessible solid fuel combustor validation
 8. Trivic doi:[10.1016/j.ijheatmasstransfer.2003.09.027](https://doi.org/10.1016/j.ijheatmasstransfer.2003.09.027) — non-grey WSGG–discrete-ordinates radiation formulation
 9. Bordbar et al. (2014) doi:[10.1016/j.combustflame.2014.03.013](https://doi.org/10.1016/j.combustflame.2014.03.013) — WSGG coefficients for oxyfuel atmospheres
 10. Dorigon et al. (2013) doi:[10.1016/j.ijheatmasstransfer.2013.05.010](https://doi.org/10.1016/j.ijheatmasstransfer.2013.05.010) — WSGG coefficients for air atmospheres
