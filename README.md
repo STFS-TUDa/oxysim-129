@@ -32,6 +32,7 @@ Developed at the [Institute for Simulation of reactive Thermo-Fluid Systems (STF
 | [Submodels](src/lagrangian/intermediate/submodels/README.md) | Devolatilization, heat capacity, char oxidation, injection, drag, cloud radiation |
 | [Radiation](src/radiation/README.md) | WSGG / fvDOM radiation model |
 | [test\_fp](tests/integration/test_fp/README.md) | Freely-propagating flame integration test |
+| [test\_standard\_BC\_lookup](tests/integration/test_standard_BC_lookup/README.md) | Flamelet boundary condition lookup integration test |
 | [test\_C2SM](tests/integration/test_C2SM/README.md) | C2SM devolatilization integration test |
 | [test\_flamelet\_particle\_heating](tests/integration/test_flamelet_particle_heating/README.md) | Particle heat transfer integration test |
 | [test\_flamelet\_particle\_gas\_phase\_coupling](tests/integration/test_flamelet_particle_gas_phase_coupling/README.md) | Flamelet–particle coupling integration test |
@@ -233,7 +234,11 @@ tests/
 │   ├── test_standard_BC_lookup/              Flamelet boundary condition lookup
 │   ├── test_C2SM/                            C2SM devolatilization validation
 │   ├── test_flamelet_particle_heating/       Particle heat transfer
-│   └── test_flamelet_particle_gas_phase_coupling/  Full flamelet–particle coupling
+│   ├── test_flamelet_particle_gas_phase_coupling/  Full flamelet–particle coupling
+│   ├── test_multiphaseRadiation_dorigon/     Gas+particle radiation (air atmosphere)
+│   └── test_multiphaseRadiation_bordbar/     Gas+particle radiation (oxyfuel atmosphere)
+├── unit/
+│   └── testFlameletThermo/                   flameletThermo unit test (Catch2)
 ├── conftest.py                   Shared pytest fixtures (testdir, write_report)
 └── python_utils/
     ├── foam_utils.py              OpenFOAM-to-pandas helper (foam_to_df) used by test_fp
