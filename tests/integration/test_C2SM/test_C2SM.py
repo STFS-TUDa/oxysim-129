@@ -94,8 +94,8 @@ def test_C2SM(testdir, write_report):
 
 
     # test
-    np.testing.assert_allclose(prt_df['mass/mass0'],particle_reference_df['mass/mass0'],atol=1.1e-2)
-    np.testing.assert_allclose(prt_df['YC(s)'],particle_reference_df['YC(s)'],atol=0.016)
+    np.testing.assert_allclose(prt_df['mass/mass0'],particle_reference_df['mass/mass0'],atol=1e-2)
+    np.testing.assert_allclose(prt_df['YC(s)'],particle_reference_df['YC(s)'],atol=0.015)
     np.testing.assert_allclose(np.array(mass_gas_volatiles), final_reference_df['mass_volatiles_final'],rtol=1e-3)
     np.testing.assert_allclose(np.array(prt_df['mass'].iloc[-1]), final_reference_df['mass_final_particle'].iloc[0],rtol=1e-3)
 
