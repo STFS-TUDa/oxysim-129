@@ -1,0 +1,78 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale 1;
+
+vertices
+(
+    (0.0  -0.0001 -0.0001)
+    (0.025 -0.0001 -0.0001)
+    (0.025  0.0001 -0.0001)
+    (0.0   0.0001 -0.0001)
+    (0.0  -0.0001  0.0001)
+    (0.025 -0.0001  0.0001)
+    (0.025  0.0001  0.0001)
+    (0.0   0.0001  0.0001)
+);
+
+blocks
+(
+    // For the testing a relatively low grid resolution is employed.
+    // For other flame calculations, the resolution should be adapted and suitable for the flame investigated.
+    hex (0 1 2 3 4 5 6 7) (2500 1 1) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (1 2 6 5)
+        );
+    }
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+            (0 1 5 4)
+            (7 6 2 3)
+            (4 5 6 7)
+            (0 3 2 1)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+
+// ************************************************************************* //

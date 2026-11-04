@@ -159,6 +159,18 @@ def validate_freelyPropagatingFlame(result, reference, yvs=[]):
     )
 
 
+def add_reactingFoam(df, xv, yvs, filename):
+    """
+    add the reactingFoam solution (plot only, not tested) to the current figure
+    """
+    fig = plt.gcf()
+    for yv, ax in zip([yv for yv in yvs if yv != xv], fig.axes):
+        df.plot(xv, yv, ax=ax, legend=False, linestyle=":", color="C2", label="reactingFoam")
+    fig.axes[0].legend()
+    fig.savefig(filename)
+    plt.close(fig)
+
+
 def test_fpFlame(testdir, write_report):
     # run OpenFOAM
     subprocess.run(["bash", "./Allrun", "-p"], cwd=testdir, check=True)
@@ -181,20 +193,29 @@ def test_fpFlame(testdir, write_report):
 
     # plot results
     if write_report:
+        reactingFoam = pd.read_parquet(
+            os.path.join(TEST_DIR, "reference/foam/reactingFoam_t_{:.3f}.parq".format(time))
+        )
         plot_line_profiles(
             reference=reference,
             result=result,
             xv="x",
-            yvs=[*quantities_of_interest, "p"],
+            yvs=[*quantities_of_interest, "T", "p"],
             filename=f"{FIGURES_DIR}/t_{time}_physicalSpace.png",
+            labels=["flameletFoam", "Reference"],
+            show=True,
         )
+        add_reactingFoam(reactingFoam, "x", [*quantities_of_interest, "T", "p"], f"{FIGURES_DIR}/t_{time}_physicalSpace.png")
         plot_line_profiles(
             reference=reference,
             result=result,
             xv="yc",
-            yvs=[*quantities_of_interest, "p"],
+            yvs=[*quantities_of_interest, "T", "p"],
             filename=f"{FIGURES_DIR}/t_{time}_stateSpace.png",
+            labels=["flameletFoam", "Reference"],
+            show=True,
         )
+        add_reactingFoam(reactingFoam, "yc", [*quantities_of_interest, "T", "p"], f"{FIGURES_DIR}/t_{time}_stateSpace.png")
 
     # test
     validate_freelyPropagatingFlame(

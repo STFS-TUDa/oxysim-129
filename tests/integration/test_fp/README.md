@@ -8,6 +8,7 @@
 
 ## Description
 In this testcase a 1D freely-propagating methane-air flame ($Z=0.05$) is calculated using tabulated chemistry.
+A reactingFoam (detailed chemistry) solution of the same flame is included in `reactingFoam/` and shown in the report figures; it is not run during testing (see `reactingFoam/README.md`).
 
 ## Initial and boundary conditions
 The boundary conditions are configured as follows
